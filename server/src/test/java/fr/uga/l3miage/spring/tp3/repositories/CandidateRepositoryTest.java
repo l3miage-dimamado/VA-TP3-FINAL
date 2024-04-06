@@ -70,7 +70,7 @@ public class CandidateRepositoryTest {
                 .lastname("NEN")
                 .email("blabla@yahoo.com")
                 .phoneNumber("44444444")
-                .birthDate( LocalDate.parse("1884-04-17"))
+                .birthDate( LocalDate.parse("2019-04-17"))
                 .hasExtraTime(Boolean.parseBoolean("False"))
                 .testCenterEntity(testCenterEntity)     // relation bidirectionnelle sens candidateEntity2--->testCenterEntity
                 .build();
@@ -174,17 +174,16 @@ public class CandidateRepositoryTest {
                 .lastname("NENB")
                 .email("Bblabla@yahoo.com")
                 .phoneNumber("54444444")
-                .birthDate( LocalDate.parse("1884-04-17"))
+                .birthDate( LocalDate.parse("2022-04-17"))
                 .hasExtraTime(Boolean.parseBoolean("False"))
                 .candidateEvaluationGridEntities( Set.of( candidateEvaluationGridEntity17))
                 .build();
 
-        candidateRepository.save(candidateEntity);   // maintenent on enregistre les candidateEntity en base
+        candidateRepository.save(candidateEntity);   // maintenant on enregistre les candidateEntity en base
         candidateRepository.save(candidateEntity1);
         candidateRepository.save(candidateEntity2);
 
         // Relations bidirectionnelles sens CandidateEvaluationGridEntitieS ---> CandidateEntity
-
         candidateEvaluationGridEntity15.setCandidateEntity(candidateEntity);
         candidateEvaluationGridEntity8.setCandidateEntity(candidateEntity);
 
@@ -210,7 +209,65 @@ public class CandidateRepositoryTest {
 
         // ****Ce test sur la fonction RequestfindAllByCandidateEvaluationGridEntitiesGradeLessThan échoue,
          // ****celà nous prouve qu'elle ne retourne pas le résultat attendu?
+    }
+
+    @Test
+    void testRequestfindAllByHasExtraTimeFalseAndBirthDateBefore(){
+        CandidateEntity candidateEntity = CandidateEntity
+                .builder()
+                .firstname("CedC")
+                .lastname("KENC")
+                .email("Cblabla@gmail.com")
+                .phoneNumber("72121313")
+                .birthDate(LocalDate.parse("1973-02-15"))
+                .hasExtraTime(Boolean.parseBoolean("False"))
+                .build();
+
+        CandidateEntity candidateEntity1 = CandidateEntity
+                .builder()
+                .firstname("MaxC")
+                .lastname("BANC")
+                .email("Cblibli@gmal.com")
+                .phoneNumber("61111111")
+                .birthDate(  LocalDate.parse("1999-01-23"))
+                .hasExtraTime(Boolean.parseBoolean("True"))
+                .build();
+
+        CandidateEntity candidateEntity2 = CandidateEntity
+                .builder()
+                .firstname("CarlC")
+                .lastname("NENB")
+                .email("Cblabla@yahoo.com")
+                .phoneNumber("64444444")
+                .birthDate( LocalDate.parse("2001-04-17"))
+                .hasExtraTime(Boolean.parseBoolean("False"))
+                .build();
+
+        candidateRepository.save(candidateEntity);   // maintenent on enregistre les candidateEntity en base
+        candidateRepository.save(candidateEntity1);
+        candidateRepository.save(candidateEntity2);
+
+        //when
+        Set<CandidateEntity> candidateEntitiesResponses = candidateRepository.findAllByHasExtraTimeFalseAndBirthDateBefore(LocalDate.parse("1978-02-15")); // 1 élément à trouver
+        Set<CandidateEntity> candidateEntitiesResponses2 = candidateRepository.findAllByHasExtraTimeFalseAndBirthDateBefore(LocalDate.parse("1973-01-15")); // 0 élément à trouver
+        Set<CandidateEntity> candidateEntitiesResponses3 = candidateRepository.findAllByHasExtraTimeFalseAndBirthDateBefore(LocalDate.parse("1973-02-14"));  // 0 élément à trouver
+        Set<CandidateEntity> candidateEntitiesResponses4 = candidateRepository.findAllByHasExtraTimeFalseAndBirthDateBefore(LocalDate.parse("1973-02-15"));  // // 0 élément à trouver
+
+        Set<CandidateEntity> candidateEntitiesResponses5 = candidateRepository.findAllByHasExtraTimeFalseAndBirthDateBefore(LocalDate.parse("2000-01-01"));  // // 1 élément à trouver
+        Set<CandidateEntity> candidateEntitiesResponses6 = candidateRepository.findAllByHasExtraTimeFalseAndBirthDateBefore(LocalDate.parse("2002-01-01"));  // // 2 élément à trouver
+        Set<CandidateEntity> candidateEntitiesResponses7 = candidateRepository.findAllByHasExtraTimeFalseAndBirthDateBefore(LocalDate.parse("1888-01-01"));  // // 0 élément à trouver
+
+        //Given
+        assertThat(candidateEntitiesResponses).hasSize(1);
+        assertThat(candidateEntitiesResponses2).hasSize(0);
+        assertThat(candidateEntitiesResponses3).hasSize(0);
+        assertThat(candidateEntitiesResponses4).hasSize(0);
+        assertThat(candidateEntitiesResponses5).hasSize(1);
+        assertThat(candidateEntitiesResponses6).hasSize(2);
+        assertThat(candidateEntitiesResponses7).hasSize(0);
 
 
     }
+
+
 }
