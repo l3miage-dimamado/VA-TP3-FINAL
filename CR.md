@@ -1,13 +1,10 @@
 # Compte Rendu TP3 Final Spring Test et VA L3 MIAGE 07 Avril 2024
-## Binome 1 :Mamadou Diallo
+## Binome 1 :DIALLO Mamadou Hassimiou
 ## Binome 2: KENGNI Cedrix
 
 
 ## 1-Test de Candidate Repository
-  -Nos test sur la 1ère et la 3ème requete réussissent
-  -Mais nos test sur la 2ème requete findAllByCandidateEvaluationGridEntitiesGradeLessTha ne réussissent pas.
-  -FindAllByCandidateEvaluationGridEntitiesGradeLessTha(15) par exemple (étudiant, dont l'une des notes est en dessous de 15)
-  -Au lieu de renvoyer un ensemble de longueur au moins 1 ou 2, ça renvoie un ensemble vide. On a pas compris le problème
+  -Nos tests sur les 3 requetes réussissent
 
 ## 2-Tests des endpoints
 

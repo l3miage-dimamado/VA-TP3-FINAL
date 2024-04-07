@@ -26,8 +26,8 @@ public class CandidateRepositoryTest {
     private  CandidateEvaluationGridRepository candidateEvaluationGridRepository;
 
     @Test
-    void testRequestfindAllByTestCenterEntityCode(){
-
+    void testRequestFindAllByTestCenterEntityCode(){
+        //Given
         // créons des TestCenterEntity qui nous servirons pour le test
         TestCenterEntity testCenterEntity =  TestCenterEntity
                 .builder()
@@ -86,7 +86,7 @@ public class CandidateRepositoryTest {
 
 
         // when
-        Set<CandidateEntity> candidateEntitiesResponses = candidateRepository.findAllByTestCenterEntityCode(DIJ); // testcenter présent
+        Set<CandidateEntity> candidateEntitiesResponses = candidateRepository.findAllByTestCenterEntityCode(DIJ); // testcenter présent avec 1 candidat
         //then
         assertThat(candidateEntitiesResponses).hasSize(1);
         assertThat(candidateEntitiesResponses.stream().findFirst().get().getTestCenterEntity().getCode()).isEqualTo(DIJ);
@@ -96,123 +96,72 @@ public class CandidateRepositoryTest {
         //then
         assertThat(candidateEntitiesResponses2).hasSize(0);
         // when
-        Set<CandidateEntity> candidateEntitiesResponses3 = candidateRepository.findAllByTestCenterEntityCode(GRE); // 2 testcenter  présents
+        Set<CandidateEntity> candidateEntitiesResponses3 = candidateRepository.findAllByTestCenterEntityCode(GRE); // testcenter  présents avec 2 candidats
         //then
         assertThat(candidateEntitiesResponses3).hasSize(2);
         assertThat(candidateEntitiesResponses3.stream().findFirst().get().getTestCenterEntity().getCode()).isEqualTo(GRE);
     }
 
-
     @Test
-    void testRequestfindAllByCandidateEvaluationGridEntitiesGradeLessThan(){
-
-        CandidateEvaluationGridEntity candidateEvaluationGridEntity15 = CandidateEvaluationGridEntity
+    void testRequestFindAllByCandidateEvaluationGridEntitiesGradeLessThan(){
+        //Given
+        CandidateEvaluationGridEntity candidateEvaluationGrid10 = CandidateEvaluationGridEntity
                 .builder()
-                .grade(15)
+                .grade(10)
                 .build();
 
-        CandidateEvaluationGridEntity candidateEvaluationGridEntity5 = CandidateEvaluationGridEntity
-                .builder()
-                .grade(5)
-                .build();
-
-        CandidateEvaluationGridEntity candidateEvaluationGridEntity7_5 = CandidateEvaluationGridEntity
-                .builder()
-                .grade(7.5)
-                .build();
-
-        CandidateEvaluationGridEntity candidateEvaluationGridEntity17 = CandidateEvaluationGridEntity
+        CandidateEvaluationGridEntity candidateEvaluationGrid17 = CandidateEvaluationGridEntity
                 .builder()
                 .grade(17)
                 .build();
 
-        CandidateEvaluationGridEntity candidateEvaluationGridEntity14 = CandidateEvaluationGridEntity
+        CandidateEvaluationGridEntity candidateEvaluationGrid4 = CandidateEvaluationGridEntity
                 .builder()
-                .grade(14)
-                .build();
-
-        CandidateEvaluationGridEntity candidateEvaluationGridEntity8 = CandidateEvaluationGridEntity
-                .builder()
-                .grade(8)
-                .build();
-
-        candidateEvaluationGridRepository.save(candidateEvaluationGridEntity15);
-        candidateEvaluationGridRepository.save(candidateEvaluationGridEntity8);
-        candidateEvaluationGridRepository.save(candidateEvaluationGridEntity7_5);
-        candidateEvaluationGridRepository.save(candidateEvaluationGridEntity17);
-        candidateEvaluationGridRepository.save(candidateEvaluationGridEntity14);
-        candidateEvaluationGridRepository.save(candidateEvaluationGridEntity8);
-
-
-
-
-        CandidateEntity candidateEntity = CandidateEntity
-                .builder() //15 et 5
-                .firstname("CedB")
-                .lastname("KENB")
-                .email("Bblabla@gmail.com")
-                .phoneNumber("62121313")
-                .birthDate(LocalDate.parse("2003-02-15"))
-                .hasExtraTime(Boolean.parseBoolean("False"))
-                .candidateEvaluationGridEntities(Set.of(candidateEvaluationGridEntity15, candidateEvaluationGridEntity8))
+                .grade(4)
                 .build();
 
         CandidateEntity candidateEntity1 = CandidateEntity
                 .builder()
-                .firstname("MaxB")
-                .lastname("BANB")
-                .email("Bblibli@gmal.com")
-                .phoneNumber("51111111")
-                .birthDate(  LocalDate.parse("1999-01-23"))
-                .hasExtraTime(Boolean.parseBoolean("True"))
-                .candidateEvaluationGridEntities( Set.of(candidateEvaluationGridEntity14, candidateEvaluationGridEntity8, candidateEvaluationGridEntity7_5))
+                .birthDate(LocalDate.now())
+                .hasExtraTime(false)
+                .email("ici@test")
+                .candidateEvaluationGridEntities(Set.of(candidateEvaluationGrid10, candidateEvaluationGrid17))
                 .build();
+        candidateEvaluationGrid10.setCandidateEntity(candidateEntity1);
+        candidateEvaluationGrid17.setCandidateEntity(candidateEntity1);
 
         CandidateEntity candidateEntity2 = CandidateEntity
                 .builder()
-                .firstname("CarlB")
-                .lastname("NENB")
-                .email("Bblabla@yahoo.com")
-                .phoneNumber("54444444")
-                .birthDate( LocalDate.parse("2022-04-17"))
-                .hasExtraTime(Boolean.parseBoolean("False"))
-                .candidateEvaluationGridEntities( Set.of( candidateEvaluationGridEntity17))
+                .birthDate(LocalDate.now())
+                .hasExtraTime(true)
+                .email("ci2@test")
+                .candidateEvaluationGridEntities(Set.of(candidateEvaluationGrid4))
                 .build();
 
-        candidateRepository.save(candidateEntity);   // maintenant on enregistre les candidateEntity en base
+        candidateEvaluationGrid4.setCandidateEntity(candidateEntity2);
+
+
         candidateRepository.save(candidateEntity1);
         candidateRepository.save(candidateEntity2);
+        candidateEvaluationGridRepository.save(candidateEvaluationGrid10);
+        candidateEvaluationGridRepository.save(candidateEvaluationGrid17);
+        candidateEvaluationGridRepository.save(candidateEvaluationGrid4);
 
-        // Relations bidirectionnelles sens CandidateEvaluationGridEntitieS ---> CandidateEntity
-        candidateEvaluationGridEntity15.setCandidateEntity(candidateEntity);
-        candidateEvaluationGridEntity8.setCandidateEntity(candidateEntity);
-
-        candidateEvaluationGridEntity14.setCandidateEntity(candidateEntity1);
-        candidateEvaluationGridEntity8.setCandidateEntity(candidateEntity1);
-        candidateEvaluationGridEntity7_5.setCandidateEntity(candidateEntity1);
-
-        candidateEvaluationGridEntity17.setCandidateEntity(candidateEntity2);
-
-
-        // when
-
-        Set<CandidateEntity> candidateEntitiesResponses = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(15);
-        Set<CandidateEntity> candidateEntitiesResponses2 = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(14);
-        Set<CandidateEntity> candidateEntitiesResponses3 = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(17);
-        Set<CandidateEntity> candidateEntitiesResponses4 = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(5);
-
+        //when
+        Set<CandidateEntity> candidateEntitiesResponses1 = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(11.00);
+        Set<CandidateEntity> candidateEntitiesResponses2 = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(4);
+        Set<CandidateEntity> candidateEntitiesResponses3 = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(18.00);
+        Set<CandidateEntity> candidateEntitiesResponses4 = candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(10.00);
         //then
-        assertThat(candidateEntitiesResponses).hasSize(2);
-        assertThat(candidateEntitiesResponses2).hasSize(2);
-        assertThat(candidateEntitiesResponses3).hasSize(1);
-        assertThat(candidateEntitiesResponses).hasSize(0);
-
-        // ****Ce test sur la fonction RequestfindAllByCandidateEvaluationGridEntitiesGradeLessThan échoue,
-         // ****celà nous prouve qu'elle ne retourne pas le résultat attendu?
+        assertThat(candidateEntitiesResponses1).hasSize(2);
+        assertThat(candidateEntitiesResponses2).hasSize(0);
+        assertThat(candidateEntitiesResponses3).hasSize(2);
+        assertThat(candidateEntitiesResponses4).hasSize(1);
     }
 
     @Test
-    void testRequestfindAllByHasExtraTimeFalseAndBirthDateBefore(){
+    void testRequestFindAllByHasExtraTimeFalseAndBirthDateBefore(){
+        //Given
         CandidateEntity candidateEntity = CandidateEntity
                 .builder()
                 .firstname("CedC")
@@ -220,7 +169,7 @@ public class CandidateRepositoryTest {
                 .email("Cblabla@gmail.com")
                 .phoneNumber("72121313")
                 .birthDate(LocalDate.parse("1973-02-15"))
-                .hasExtraTime(Boolean.parseBoolean("False"))
+                .hasExtraTime(false)
                 .build();
 
         CandidateEntity candidateEntity1 = CandidateEntity
@@ -230,7 +179,7 @@ public class CandidateRepositoryTest {
                 .email("Cblibli@gmal.com")
                 .phoneNumber("61111111")
                 .birthDate(  LocalDate.parse("1999-01-23"))
-                .hasExtraTime(Boolean.parseBoolean("True"))
+                .hasExtraTime(true)
                 .build();
 
         CandidateEntity candidateEntity2 = CandidateEntity
@@ -240,7 +189,7 @@ public class CandidateRepositoryTest {
                 .email("Cblabla@yahoo.com")
                 .phoneNumber("64444444")
                 .birthDate( LocalDate.parse("2001-04-17"))
-                .hasExtraTime(Boolean.parseBoolean("False"))
+                .hasExtraTime(false)
                 .build();
 
         candidateRepository.save(candidateEntity);   // maintenent on enregistre les candidateEntity en base
@@ -257,7 +206,7 @@ public class CandidateRepositoryTest {
         Set<CandidateEntity> candidateEntitiesResponses6 = candidateRepository.findAllByHasExtraTimeFalseAndBirthDateBefore(LocalDate.parse("2002-01-01"));  // // 2 élément à trouver
         Set<CandidateEntity> candidateEntitiesResponses7 = candidateRepository.findAllByHasExtraTimeFalseAndBirthDateBefore(LocalDate.parse("1888-01-01"));  // // 0 élément à trouver
 
-        //Given
+        //then
         assertThat(candidateEntitiesResponses).hasSize(1);
         assertThat(candidateEntitiesResponses2).hasSize(0);
         assertThat(candidateEntitiesResponses3).hasSize(0);

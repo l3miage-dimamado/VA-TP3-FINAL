@@ -147,8 +147,8 @@ public class CandidateComponentTest {
         Set<CandidateEntity> EnsCand = Set.of(candidateEntity, candidateEntity1, candidateEntity2);
         //un ensemble de candidats, pour simuler la base de données
         //Given
-        when( candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(15)).thenReturn(Optional.of(EnsCand));
-                                                                                                        //On ne comprends pas ce bug au niveau de la methode Optional et autre
+        when( candidateRepository.findAllByCandidateEvaluationGridEntitiesGradeLessThan(15)).thenReturn(EnsCand);
+
         //then - when
         assertDoesNotThrow( ()->candidateComponent.getAllEliminatedCandidate());
     }
